@@ -1,55 +1,57 @@
 package com.sparta.hardtask.entity;
 
-import com.sparta.hardtask.dto.ScheduleRequestDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
-@Entity // JPA가 관리할 수 있는 Entity 클래스 지정
+import java.util.List;
+
+@Entity
 @Getter
-@Setter
-@Table(name = "schedule") // 매핑할 테이블의 이름을 지정
 @NoArgsConstructor
-public class Schedule {
+public class Schedule extends com.sparta.hardtask.entity.BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //할일 제목
-    @Column(name = "title", nullable = false)
-    private String title;
-
-    //할일 내용
-    @Column(name = "contents")
-    private String contents;
-
-    //담당자
-    @Column(name = "user" , nullable = false)
+    @Column(length = 100)
+    @Email
     private String username;
 
-    //비밀번호
-    @Column(name = "password", nullable = false)
+    @Column(length = 100, nullable = false)
+    @NotBlank
     private String password;
 
-    public Schedule(ScheduleRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.username = requestDto.getUsername();
-        this.contents = requestDto.getContents();
-        this.password = requestDto.getPassword();
+    @Column
+    @Length(max = 200)
+    @NotBlank
+    private String title;
+
+    @Column
+    private String description;
+
+    // 외래키로 인해서 일정 삭제 시 관련 exception이 발생하므로 orphanRemoval을 사용
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<com.sparta.hardtask.entity.Comment> comments;
+
+    public Schedule(String title, String description, String username, String password) {
+        this.title = title;
+        this.description = description;
+        this.username = username;
+        this.password = password;
     }
 
-    public void update(ScheduleRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.username = requestDto.getUsername();
-        this.contents = requestDto.getContents();
+    public void update(String title, String description) {
+        if (title != null && !title.isBlank()) {
+            this.title = title;
+        }
+
+        if (description != null && !description.isBlank()) {
+            this.description = description;
+        }
     }
-
-//    public void Scheudule(ScheduleRequestDto requestDto) {
-//        this.title = requestDto.getTitle();
-//        this.username = requestDto.getUsername();
-//        this.contents = requestDto.getContents();
-//        this.password = requestDto.getPassword();
-
-//    }
 }
