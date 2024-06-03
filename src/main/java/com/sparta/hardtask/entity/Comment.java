@@ -1,5 +1,7 @@
 package com.sparta.hardtask.entity;
 
+import com.sparta.hardtask.entity.BaseEntity;
+import com.sparta.hardtask.entity.Schedule;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Comment extends com.sparta.hardtask.entity.BaseEntity {
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,5 +27,11 @@ public class Comment extends com.sparta.hardtask.entity.BaseEntity {
     @ManyToOne
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
+    public Comment(String comment, String username, Schedule schedule) {
+        this.comment = comment;
+        this.username = username;
+        this.schedule = schedule;
+    }
 
 }

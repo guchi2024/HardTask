@@ -4,9 +4,9 @@ import com.sparta.hardtask.dto.ScheduleCreateRequest;
 import com.sparta.hardtask.dto.ScheduleDeleteRequest;
 import com.sparta.hardtask.dto.ScheduleResponse;
 import com.sparta.hardtask.dto.ScheduleUpdateRequest;
+import com.sparta.hardtask.exception.DataNotFoundException;
 import com.sparta.hardtask.entity.Schedule;
 import com.sparta.hardtask.repository.ScheduleRepository;
-import com.sparta.hardtask.exception.DataNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +26,7 @@ public class ScheduleService {
         return ScheduleResponse.toDto(findScheduleById(id));
     }
 
-    private Schedule findScheduleById(long id) {
+    protected Schedule findScheduleById(long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("해당 Id에 맞는 일정을 찾을 수 없습니다."));
     }
